@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "source": "TugasKu Category Metadata Mock API",
+    "author": "Mira",
+    "version": "1.0.0"
+  },
+  "categories": [
+    {
+      "name": "Akademik",
+      "description": "Tugas kuliah, laporan praktikum, kuis, dan proyek kelompok semester 5.",
+      "recommendedWeeklyHours": 18,
+      "badgeColor": "bg-pink-100 text-[#a7295a]"
+    },
+    {
+      "name": "Non Akademik",
+      "description": "Kegiatan lomba, kursus tambahan, webinar, dan pengembangan portofolio.",
+      "recommendedWeeklyHours": 6,
+      "badgeColor": "bg-[#a4f0e9] text-[#005c57]"
+    },
+    {
+      "name": "Personal",
+      "description": "Olahraga rutin, membaca buku, ibadah, dan manajemen kebutuhan kost.",
+      "recommendedWeeklyHours": 8,
+      "badgeColor": "bg-[#f7ee96] text-[#5e5810]"
+    },
+    {
+      "name": "Organisasi",
+      "description": "Rapat himpunan, kepanitiaan acara kampus, dan koordinasi divisi.",
+      "recommendedWeeklyHours": 5,
+      "badgeColor": "bg-purple-100 text-purple-800"
+    }
+  ]
+}

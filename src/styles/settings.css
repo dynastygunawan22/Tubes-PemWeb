@@ -1,0 +1,25 @@
+/* Stylesheet Modul Archive & Settings (Mira) */
+
+.archive-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.settings-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media screen and (max-width: 1024px) {
+  .settings-panel-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .archive-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
