@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "source": "TugasKu Quotes & Productivity API",
+    "version": "1.0.0"
+  },
+  "quotes": [
+    {
+      "id": 1,
+      "quote": "Fokus pada satu tugas sampai tuntas jauh lebih efektif daripada mengerjakan lima hal sekaligus setengah-setengah.",
+      "author": "Cal Newport — Deep Work",
+      "tag": "Fokus Akademik"
+    },
+    {
+      "id": 2,
+      "quote": "Jangan tunggu motivasi datang baru mulai menyicil tugas; mulailah 10 menit pertama, maka motivasi akan mengikuti.",
+      "author": "James Clear — Atomic Habits",
+      "tag": "Kebiasaan Belajar"
+    },
+    {
+      "id": 3,
+      "quote": "Istirahat yang terjadwal bukan berarti malas, melainkan bagian dari strategi menjaga konsistensi jangka panjang.",
+      "author": "Francesco Cirillo — Teknik Pomodoro",
+      "tag": "Manajemen Energi"
+    },
+    {
+      "id": 4,
+      "quote": "Mencatat tenggat waktu di luar kepala membebaskan pikiranmu untuk berpikir kreatif dan menyelesaikan masalah.",
+      "author": "David Allen — Getting Things Done",
+      "tag": "Perencanaan Harian"
+    }
+  ]
+}
