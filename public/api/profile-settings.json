@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "source": "TugasKu Team & System Settings Mock API",
+    "author": "Mira",
+    "version": "1.0.0"
+  },
+  "course": "Perancangan dan Pemrograman Web — Tugas Besar I (UTS)",
+  "repository": "https://github.com/dynastygunawan22/Tubes-PemWeb.git",
+  "teamMembers": [
+    {
+      "name": "Dynasty Danna Gunawan",
+      "nim": "103082400037",
+      "role": "Lead Frontend, Dashboard & Manajemen Tugas",
+      "pages": "Dashboard & List Tugas Lengkap",
+      "branch": "feat/dynasty-dashboard-tasks"
+    },
+    {
+      "name": "Yosep Warih Martua Manik",
+      "nim": "103082400017",
+      "role": "Kalender Interaktif, Rundown & Analitik",
+      "pages": "Rundown Bulanan & Analitik Produktivitas",
+      "branch": "feat/yosep-rundown-analytics"
+    },
+    {
+      "name": "Muhammad Rozi",
+      "nim": "103082400040",
+      "role": "Manajemen Jadwal Harian & Timer Fokus",
+      "pages": "Jadwal Harian & Timer Fokus Pomodoro",
+      "branch": "feat/rozi-schedule-pomodoro"
+    },
+    {
+      "name": "Miratun Nisa'",
+      "nim": "103082400001",
+      "role": "Manajemen Arsip, Kategori & Pengaturan Sistem",
+      "pages": "Archive Tugas & Settings Profil",
+      "branch": "feat/mira-archive-settings"
+    }
+  ]
+}
