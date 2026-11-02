@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "source": "TugasKu Local Mock API",
+    "version": "1.0.0",
+    "description": "Data tugas awal mahasiswa untuk simulasi konsumsi API secara dinamis"
+  },
+  "data": [
+    {
+      "id": 101,
+      "title": "Finalisasi komponen Dashboard & integrasi Fetch API Tugas Besar Web",
+      "description": "Menyelesaikan state loading skeleton, error handling retry, dan koneksi antorhalaman.",
+      "category": "Akademik",
+      "startDateOffset": -1,
+      "dueDateOffset": 0,
+      "status": "progress",
+      "urgent": true,
+      "estimatedMinutes": 90
+    },
+    {
+      "id": 102,
+      "title": "Revisi bab 3 laporan praktikum Rekayasa Perangkat Lunak",
+      "description": "Memperbaiki diagram sequence dan tabel kebutuhan fungsional sesuai catatan asisten.",
+      "category": "Akademik",
+      "startDateOffset": -2,
+      "dueDateOffset": 0,
+      "status": "belum",
+      "urgent": true,
+      "estimatedMinutes": 60
+    },
+    {
+      "id": 103,
+      "title": "Latihan listening & membaca artikel Bahasa Inggris 25 menit",
+      "description": "Membaca artikel teknologi di Medium dan mencatat 10 kosakata baru.",
+      "category": "Personal",
+      "startDateOffset": 0,
+      "dueDateOffset": 1,
+      "status": "belum",
+      "urgent": false,
+      "estimatedMinutes": 25
+    },
+    {
+      "id": 104,
+      "title": "Rapat koordinasi pembagian modul GitHub kelompok Pemrograman Web",
+      "description": "Membahas pembagian branch untuk Dynasty, Yosep, Rozi, dan Mira agar tidak konflik.",
+      "category": "Organisasi",
+      "startDateOffset": -3,
+      "dueDateOffset": -1,
+      "status": "selesai",
+      "urgent": true,
+      "estimatedMinutes": 45
+    },
+    {
+      "id": 105,
+      "title": "Merapikan catatan kuliah Basis Data & latihan query JOIN",
+      "description": "Mengerjakan 5 soal latihan subquery dari slide minggu ke-6.",
+      "category": "Akademik",
+      "startDateOffset": 0,
+      "dueDateOffset": 2,
+      "status": "progress",
+      "urgent": false,
+      "estimatedMinutes": 50
+    },
+    {
+      "id": 106,
+      "title": "Siapkan draf pertanyaan wawancara untuk narasumber tugas kewirausahaan",
+      "description": "Menyusun 8 poin pertanyaan terkait validasi masalah pelanggan UMKM.",
+      "category": "Non Akademik",
+      "startDateOffset": -2,
+      "dueDateOffset": -1,
+      "status": "belum",
+      "urgent": true,
+      "estimatedMinutes": 40
+    },
+    {
+      "id": 107,
+      "title": "Olahraga sore & jogging keliling kampus 30 menit",
+      "description": "Menjaga kebugaran fisik di sela padatnya jadwal deadline minggu UTS.",
+      "category": "Personal",
+      "startDateOffset": -1,
+      "dueDateOffset": -1,
+      "status": "selesai",
+      "urgent": false,
+      "estimatedMinutes": 30
+    },
+    {
+      "id": 108,
+      "title": "Desain mockup responsif mobile untuk halaman Jadwal & Rundown",
+      "description": "Memastikan ukuran tombol dan navigasi bawah nyaman diakses di layar smartphone.",
+      "category": "Akademik",
+      "startDateOffset": -4,
+      "dueDateOffset": -2,
+      "status": "selesai",
+      "urgent": false,
+      "estimatedMinutes": 75
+    }
+  ]
+}
