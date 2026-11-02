@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "source": "TugasKu Rundown & Academic Calendar Mock API",
+    "author": "Yosep",
+    "version": "1.0.0"
+  },
+  "academicEvents": [
+    {
+      "id": 301,
+      "dayOffset": 0,
+      "title": "Batas Pengumpulan Tahap 1 Proyek UTS Pemrograman Web",
+      "type": "Deadline Akademik"
+    },
+    {
+      "id": 302,
+      "dayOffset": 2,
+      "title": "Presentasi Demo Aplikasi Kelompok di Kelas",
+      "type": "Presentasi"
+    },
+    {
+      "id": 303,
+      "dayOffset": 5,
+      "title": "Kuis Evaluasi Tengah Semester Basis Data",
+      "type": "Ujian / Kuis"
+    }
+  ],
+  "defaultNotes": [
+    {
+      "dayOffset": 0,
+      "note": "Pastikan seluruh halaman terhubung rapi dan tidak ada error pada console browser."
+    },
+    {
+      "dayOffset": 1,
+      "note": "Review ulang pembagian commit Git masing-masing anggota sebelum jam 20.00."
+    }
+  ]
+}
