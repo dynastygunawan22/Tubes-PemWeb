@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "source": "TugasKu Productivity Analytics Mock API",
+    "author": "Yosep",
+    "version": "1.0.0"
+  },
+  "weeklyTrend": [
+    { "day": "Senin", "completed": 4, "target": 5, "focusMinutes": 110 },
+    { "day": "Selasa", "completed": 5, "target": 5, "focusMinutes": 135 },
+    { "day": "Rabu", "completed": 3, "target": 5, "focusMinutes": 90 },
+    { "day": "Kamis", "completed": 6, "target": 5, "focusMinutes": 150 },
+    { "day": "Jumat", "completed": 4, "target": 5, "focusMinutes": 105 },
+    { "day": "Sabtu", "completed": 3, "target": 3, "focusMinutes": 80 },
+    { "day": "Minggu", "completed": 2, "target": 3, "focusMinutes": 60 }
+  ],
+  "insights": [
+    "Waktu paling produktif minggu ini tercatat pada hari Kamis dengan total fokus 150 menit.",
+    "Kategori Akademik mendominasi 62% dari seluruh beban kerja mingguan.",
+    "Tingkat penyelesaian tugas tepat waktu (on-time) berada pada angka 84%."
+  ]
+}
