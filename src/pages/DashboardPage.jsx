@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useTugasKu, STATUS_MAP } from '../context/TugasKuContext'
+import { useTugasKu, STATUS_MAP, FILTER_LABELS } from '../context/TugasKuContext'
 import { SkeletonLoader } from '../components/common/SkeletonLoader'
 import { ErrorState } from '../components/common/ErrorState'
 import { formatShortDate, isTaskOverdue } from '../utils/dateHelper'
@@ -10,6 +10,7 @@ export default function DashboardPage() {
     todayISO,
     categories,
     metrics,
+    filterCounts,
     sidebarFilteredTasks,
     isLoadingTasks,
     apiError,
@@ -22,10 +23,14 @@ export default function DashboardPage() {
     toggleTaskDone,
     toggleTaskUrgent,
     deleteTask,
+    markAllTasksDone,
     openEditTaskModal,
     navigateTo,
     activeFilter,
     setActiveFilter,
+    taskCategoryFilter,
+    setTaskCategoryFilter,
+    tasks,
   } = useTugasKu()
 
   const [quickTitle, setQuickTitle] = useState('')
@@ -67,30 +72,61 @@ export default function DashboardPage() {
     setQuickError('')
   }
 
-  const displayedTasks = sidebarFilteredTasks.slice(0, 8)
+  const displayedTasks = sidebarFilteredTasks.slice(0, 10)
+  const activeFilterTitle = FILTER_LABELS[activeFilter] || 'Tugas Hari Ini'
+  const isFiltered = activeFilter !== 'all' || taskCategoryFilter !== 'all'
+  const allTasksCompleted = tasks.length > 0 && tasks.every((t) => t.status === 'selesai')
 
   return (
     <section aria-labelledby="dashboard-main-heading" className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-100/80 text-[#a7295a] text-xs font-bold mb-2">
-            <span className="material-symbols-outlined text-[15px]" aria-hidden="true">
-              wb_sunny
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-100/80 text-[#a7295a] text-xs font-bold">
+              <span className="material-symbols-outlined text-[15px]" aria-hidden="true">
+                wb_sunny
+              </span>
+              Ringkasan Produktivitas Mahasiswa
             </span>
-            Ringkasan Produktivitas Mahasiswa
-          </span>
+            {isFiltered && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#a7295a] text-white text-xs font-bold">
+                Filter: {activeFilterTitle}
+                {taskCategoryFilter !== 'all' ? ` • ${taskCategoryFilter}` : ''} (
+                {sidebarFilteredTasks.length})
+              </span>
+            )}
+          </div>
           <h1
             id="dashboard-main-heading"
             className="font-headline font-black tracking-tight text-2xl sm:text-3xl lg:text-4xl text-[#2e2f2d]"
           >
-            Tugas Hari Ini
+            {activeFilter === 'all' && taskCategoryFilter === 'all'
+              ? 'Tugas Hari Ini'
+              : activeFilterTitle}
           </h1>
           <p className="text-sm md:text-base text-[#5b5c59] mt-1">
-            Playful, terstruktur, dan tetap fokus menuntaskan target kuliahmu.
+            {taskCategoryFilter !== 'all'
+              ? `Menampilkan daftar tugas pada kategori "${taskCategoryFilter}".`
+              : 'Playful, terstruktur, dan tetap fokus menuntaskan target kuliahmu.'}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {isFiltered && (
+            <button
+              type="button"
+              onClick={() => {
+                setActiveFilter('all')
+                setTaskCategoryFilter('all')
+              }}
+              className="h-9 px-4 rounded-full bg-pink-100 hover:bg-pink-200 text-xs font-bold text-[#a7295a] inline-flex items-center gap-1.5 cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[16px]" aria-hidden="true">
+                filter_alt_off
+              </span>
+              Reset Filter
+            </button>
+          )}
           <button
             type="button"
             onClick={() => navigateTo('list-tugas')}
@@ -126,7 +162,10 @@ export default function DashboardPage() {
         <SkeletonLoader variant="metrics" />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
-          <article className="rounded-2xl bg-[#a4f0e9] p-4 md:p-5 min-h-[132px] flex flex-col justify-between shadow-2xs">
+          <article
+            onClick={() => setActiveFilter('selesai')}
+            className="rounded-2xl bg-[#a4f0e9] p-4 md:p-5 min-h-[128px] flex flex-col justify-between shadow-2xs cursor-pointer hover:brightness-98 transition-all"
+          >
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-[#005c57]/80">
                 Progres Selesai
@@ -148,7 +187,10 @@ export default function DashboardPage() {
             </div>
           </article>
 
-          <article className="rounded-2xl bg-[#f74b6d] p-4 md:p-5 min-h-[132px] flex flex-col justify-between shadow-2xs">
+          <article
+            onClick={() => setActiveFilter('overdue')}
+            className="rounded-2xl bg-[#f74b6d] p-4 md:p-5 min-h-[128px] flex flex-col justify-between shadow-2xs cursor-pointer hover:brightness-98 transition-all"
+          >
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-[#ffefef]/90">
                 Perlu Perhatian
@@ -170,7 +212,10 @@ export default function DashboardPage() {
             </div>
           </article>
 
-          <article className="rounded-2xl bg-[#f7ee96] p-4 md:p-5 min-h-[132px] flex flex-col justify-between shadow-2xs">
+          <article
+            onClick={() => setActiveFilter('progress')}
+            className="rounded-2xl bg-[#f7ee96] p-4 md:p-5 min-h-[128px] flex flex-col justify-between shadow-2xs cursor-pointer hover:brightness-98 transition-all"
+          >
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-[#5e5810]/85">
                 Status Konsistensi
@@ -192,7 +237,10 @@ export default function DashboardPage() {
             </div>
           </article>
 
-          <article className="rounded-2xl bg-white border border-slate-200 p-4 md:p-5 min-h-[132px] flex flex-col justify-between shadow-2xs">
+          <article
+            onClick={() => setActiveFilter('all')}
+            className="rounded-2xl bg-white border border-slate-200 p-4 md:p-5 min-h-[128px] flex flex-col justify-between shadow-2xs cursor-pointer hover:bg-slate-50 transition-all"
+          >
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-[#5b5c59]">
                 Beban Fokus
@@ -216,58 +264,239 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Kutipan Produktivitas dari Public / Mock API */}
-      <article
-        aria-label="Kutipan motivasi produktivitas harian dari API"
-        className="rounded-2xl bg-gradient-to-r from-[#fff5f8] via-white to-[#f2fbf9] border border-pink-200/70 p-4 md:p-5 shadow-2xs"
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="space-y-1 flex-1">
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-[#a7295a]/10 text-[#a7295a] text-[11px] font-bold">
-                Inspirasi Harian (API Fetch)
-              </span>
-              {dailyQuote?.source && (
-                <span className="text-[11px] text-[#5b5c59]">
-                  Sumber: {dailyQuote.source}
-                </span>
-              )}
-            </div>
+      {/* Filter Cepat Mobile/Tablet */}
+      <div className="flex lg:hidden items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+        {[
+          { id: 'all', label: 'Semua' },
+          { id: 'today', label: 'Hari Ini' },
+          { id: 'urgent', label: 'Urgent' },
+          { id: 'progress', label: 'On Progress' },
+          { id: 'overdue', label: 'Terlambat' },
+          { id: 'selesai', label: 'Selesai' },
+        ].map((f) => (
+          <button
+            key={f.id}
+            type="button"
+            onClick={() => setActiveFilter(f.id)}
+            className={`h-8 px-3.5 rounded-full text-xs font-bold whitespace-nowrap cursor-pointer ${
+              activeFilter === f.id
+                ? 'bg-[#a7295a] text-white'
+                : 'bg-white border border-slate-200 text-slate-600'
+            }`}
+          >
+            {f.label} ({filterCounts?.[f.id] ?? 0})
+          </button>
+        ))}
+      </div>
 
-            {isQuoteLoading ? (
-              <div className="space-y-1.5 pt-1 animate-pulse">
-                <div className="h-4 w-4/5 rounded bg-slate-200" />
-                <div className="h-3 w-1/3 rounded bg-slate-100" />
-              </div>
-            ) : quoteError ? (
-              <p className="text-xs text-[#b41340] font-medium pt-1">
-                {quoteError}
-              </p>
-            ) : (
-              <blockquote className="pt-1">
-                <p className="text-sm md:text-base font-medium text-[#2e2f2d] italic">
-                  “{dailyQuote?.quote}”
-                </p>
-                <footer className="text-xs text-[#5b5c59] mt-1 font-semibold">
-                  — {dailyQuote?.author}
-                </footer>
-              </blockquote>
+      {/* Task Feed Diletakkan Langsung di Atas Agar Perubahan Filter Terlihat Seketika */}
+      <section
+        id="task-feed-section"
+        aria-labelledby="task-feed-heading"
+        className="space-y-3"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <h2 id="task-feed-heading" className="text-lg font-headline font-bold text-[#2e2f2d]">
+              Task Feed — {activeFilterTitle} ({sidebarFilteredTasks.length})
+            </h2>
+            {taskCategoryFilter !== 'all' && (
+              <span className="px-2.5 py-0.5 rounded-full bg-pink-100 text-[#a7295a] text-xs font-bold">
+                Kategori: {taskCategoryFilter}
+              </span>
             )}
           </div>
 
-          <button
-            type="button"
-            onClick={loadQuoteFromApi}
-            disabled={isQuoteLoading}
-            className="self-start sm:self-center h-9 px-3.5 rounded-full bg-white border border-slate-200 hover:bg-pink-50 text-xs font-bold text-[#a7295a] inline-flex items-center gap-1.5 shrink-0 cursor-pointer disabled:opacity-50"
-          >
-            <span className="material-symbols-outlined text-[16px]" aria-hidden="true">
-              autorenew
-            </span>
-            <span>Kutipan Baru</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {isFiltered && (
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveFilter('all')
+                  setTaskCategoryFilter('all')
+                }}
+                className="text-xs font-bold text-[#a7295a] hover:underline cursor-pointer"
+              >
+                Tampilkan Semua ({tasks.length})
+              </button>
+            )}
+          </div>
         </div>
-      </article>
+
+        {isLoadingTasks ? (
+          <SkeletonLoader variant="cards" count={4} />
+        ) : displayedTasks.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white/80 p-7 text-center space-y-3">
+            <span className="material-symbols-outlined text-4xl text-[#a7295a]/60" aria-hidden="true">
+              filter_list_off
+            </span>
+            <div className="space-y-1">
+              <p className="font-headline font-bold text-base text-[#2e2f2d]">
+                Tidak ada tugas pada filter "{activeFilterTitle}"
+                {taskCategoryFilter !== 'all' ? ` (Kategori: ${taskCategoryFilter})` : ''}
+              </p>
+              <p className="text-xs text-[#5b5c59] max-w-md mx-auto">
+                {allTasksCompleted && activeFilter !== 'selesai'
+                  ? 'Seluruh tugas saat ini telah ditandai Selesai (100%). Kamu dapat melihat daftar tugas selesai atau membuka kembali status tugas.'
+                  : 'Belum ada item tugas yang cocok dengan filter ini. Pilih filter lain di sidebar kiri atau tambahkan tugas baru.'}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveFilter('all')
+                  setTaskCategoryFilter('all')
+                }}
+                className="h-9 px-4 rounded-full bg-[#a7295a] text-white text-xs font-bold cursor-pointer"
+              >
+                Lihat Semua Tugas ({tasks.length})
+              </button>
+              {allTasksCompleted && (
+                <button
+                  type="button"
+                  onClick={markAllTasksDone}
+                  className="h-9 px-4 rounded-full bg-[#f7ee96] text-[#5e5810] text-xs font-bold cursor-pointer"
+                >
+                  Buka Kembali Status Tugas
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-2.5">
+            {displayedTasks.map((task) => {
+              const isDone = task.status === 'selesai'
+              const overdue = isTaskOverdue(task)
+              const statusInfo = STATUS_MAP[task.status] || STATUS_MAP.belum
+
+              return (
+                <article
+                  key={task.id}
+                  className={`rounded-2xl border p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all shadow-2xs ${
+                    isDone
+                      ? 'bg-emerald-50/70 border-emerald-200'
+                      : overdue
+                      ? 'bg-red-50/40 border-red-200'
+                      : 'bg-white/90 border-slate-200 hover:border-[#a7295a]/40'
+                  }`}
+                >
+                  <div className="flex items-start gap-3 min-w-0 flex-1">
+                    <button
+                      type="button"
+                      onClick={() => toggleTaskDone(task.id)}
+                      aria-label={
+                        isDone
+                          ? `Tandai tugas ${task.title} belum selesai`
+                          : `Tandai tugas ${task.title} selesai`
+                      }
+                      className={`mt-0.5 w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors cursor-pointer ${
+                        isDone
+                          ? 'bg-emerald-600 border-emerald-600 text-white'
+                          : 'bg-white border-[#a7295a] hover:bg-pink-50'
+                      }`}
+                    >
+                      {isDone && (
+                        <span className="material-symbols-outlined text-[15px]" aria-hidden="true">
+                          check
+                        </span>
+                      )}
+                    </button>
+
+                    <div className="min-w-0 flex-1">
+                      <h3
+                        className={`font-semibold text-sm md:text-base break-words ${
+                          isDone ? 'line-through text-slate-500' : 'text-[#2e2f2d]'
+                        }`}
+                      >
+                        {task.title}
+                      </h3>
+                      {task.description && (
+                        <p className="text-xs text-[#5b5c59] mt-0.5 line-clamp-2">
+                          {task.description}
+                        </p>
+                      )}
+                      <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-[#5b5c59]">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setTaskCategoryFilter(
+                              taskCategoryFilter === task.category ? 'all' : task.category
+                            )
+                          }
+                          className={`px-2.5 py-0.5 rounded-full font-medium cursor-pointer ${
+                            taskCategoryFilter === task.category
+                              ? 'bg-[#a7295a] text-white'
+                              : 'bg-[#f2f1ec] text-[#2e2f2d] hover:bg-[#e4e2de]'
+                          }`}
+                        >
+                          {task.category}
+                        </button>
+                        <span>•</span>
+                        <time
+                          dateTime={task.dueDate}
+                          className={overdue ? 'text-[#b41340] font-bold' : ''}
+                        >
+                          Tenggat: {formatShortDate(task.dueDate)}
+                          {overdue ? ' (Terlambat)' : ''}
+                        </time>
+                        {task.estimatedMinutes && (
+                          <>
+                            <span>•</span>
+                            <span>~{task.estimatedMinutes} mnt</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => toggleTaskUrgent(task.id)}
+                      className={`px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer ${
+                        task.urgent
+                          ? 'bg-[#ff709f]/30 text-[#4c0022] border border-[#a7295a]/30'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}
+                    >
+                      {task.urgent ? 'Urgent' : 'Normal'}
+                    </button>
+
+                    <span
+                      className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${statusInfo.chipClass}`}
+                    >
+                      {statusInfo.label}
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() => openEditTaskModal(task)}
+                      aria-label={`Edit tugas ${task.title}`}
+                      className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]" aria-hidden="true">
+                        edit
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => deleteTask(task.id)}
+                      aria-label={`Hapus tugas ${task.title}`}
+                      className="w-8 h-8 rounded-full bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-600 flex items-center justify-center cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]" aria-hidden="true">
+                        close
+                      </span>
+                    </button>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        )}
+      </section>
 
       {/* Form Tambah Tugas Cepat */}
       <section
@@ -358,178 +587,58 @@ export default function DashboardPage() {
         </form>
       </section>
 
-      {/* Filter Cepat Mobile/Tablet */}
-      <div className="flex lg:hidden items-center gap-2 overflow-x-auto pb-1">
-        {[
-          { id: 'all', label: 'Semua' },
-          { id: 'today', label: 'Hari Ini' },
-          { id: 'urgent', label: 'Urgent' },
-          { id: 'progress', label: 'On Progress' },
-          { id: 'overdue', label: 'Terlambat' },
-          { id: 'selesai', label: 'Selesai' },
-        ].map((f) => (
+      {/* Kutipan Produktivitas dari Public / Mock API */}
+      <article
+        aria-label="Kutipan motivasi produktivitas harian dari API"
+        className="rounded-2xl bg-gradient-to-r from-[#fff5f8] via-white to-[#f2fbf9] border border-pink-200/70 p-4 md:p-5 shadow-2xs"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1 flex-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-[#a7295a]/10 text-[#a7295a] text-[11px] font-bold">
+                Inspirasi Harian (API Fetch)
+              </span>
+              {dailyQuote?.source && (
+                <span className="text-[11px] text-[#5b5c59]">
+                  Sumber: {dailyQuote.source}
+                </span>
+              )}
+            </div>
+
+            {isQuoteLoading ? (
+              <div className="space-y-1.5 pt-1 animate-pulse">
+                <div className="h-4 w-4/5 rounded bg-slate-200" />
+                <div className="h-3 w-1/3 rounded bg-slate-100" />
+              </div>
+            ) : quoteError ? (
+              <p className="text-xs text-[#b41340] font-medium pt-1">
+                {quoteError}
+              </p>
+            ) : (
+              <blockquote className="pt-1">
+                <p className="text-sm md:text-base font-medium text-[#2e2f2d] italic">
+                  “{dailyQuote?.quote}”
+                </p>
+                <footer className="text-xs text-[#5b5c59] mt-1 font-semibold">
+                  — {dailyQuote?.author}
+                </footer>
+              </blockquote>
+            )}
+          </div>
+
           <button
-            key={f.id}
             type="button"
-            onClick={() => setActiveFilter(f.id)}
-            className={`h-8 px-3.5 rounded-full text-xs font-bold whitespace-nowrap ${
-              activeFilter === f.id
-                ? 'bg-[#a7295a] text-white'
-                : 'bg-white border border-slate-200 text-slate-600'
-            }`}
+            onClick={loadQuoteFromApi}
+            disabled={isQuoteLoading}
+            className="self-start sm:self-center h-9 px-3.5 rounded-full bg-white border border-slate-200 hover:bg-pink-50 text-xs font-bold text-[#a7295a] inline-flex items-center gap-1.5 shrink-0 cursor-pointer disabled:opacity-50"
           >
-            {f.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Task Feed */}
-      <section aria-labelledby="task-feed-heading" className="space-y-3">
-        <div className="flex items-center justify-between gap-3">
-          <h2 id="task-feed-heading" className="text-lg font-headline font-bold text-[#2e2f2d]">
-            Task Feed ({sidebarFilteredTasks.length})
-          </h2>
-          <span className="text-xs text-[#5b5c59]">
-            Filter aktif: <strong className="uppercase">{activeFilter}</strong>
-          </span>
-        </div>
-
-        {isLoadingTasks ? (
-          <SkeletonLoader variant="cards" count={4} />
-        ) : displayedTasks.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white/70 p-8 text-center space-y-2">
-            <span className="material-symbols-outlined text-4xl text-slate-400" aria-hidden="true">
-              task_alt
+            <span className="material-symbols-outlined text-[16px]" aria-hidden="true">
+              autorenew
             </span>
-            <p className="font-headline font-bold text-base text-[#2e2f2d]">
-              Tidak ada tugas pada filter ini
-            </p>
-            <p className="text-xs text-[#5b5c59]">
-              Tambahkan tugas baru lewat formulir di atas atau ubah filter prioritas di samping.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {displayedTasks.map((task) => {
-              const isDone = task.status === 'selesai'
-              const overdue = isTaskOverdue(task)
-              const statusInfo = STATUS_MAP[task.status] || STATUS_MAP.belum
-
-              return (
-                <article
-                  key={task.id}
-                  className={`rounded-2xl border p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all shadow-2xs ${
-                    isDone
-                      ? 'bg-emerald-50/70 border-emerald-200'
-                      : overdue
-                      ? 'bg-red-50/40 border-red-200'
-                      : 'bg-white/90 border-slate-200 hover:border-[#a7295a]/40'
-                  }`}
-                >
-                  <div className="flex items-start gap-3 min-w-0 flex-1">
-                    <button
-                      type="button"
-                      onClick={() => toggleTaskDone(task.id)}
-                      aria-label={
-                        isDone
-                          ? `Tandai tugas ${task.title} belum selesai`
-                          : `Tandai tugas ${task.title} selesai`
-                      }
-                      className={`mt-0.5 w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors cursor-pointer ${
-                        isDone
-                          ? 'bg-emerald-600 border-emerald-600 text-white'
-                          : 'bg-white border-[#a7295a] hover:bg-pink-50'
-                      }`}
-                    >
-                      {isDone && (
-                        <span className="material-symbols-outlined text-[15px]" aria-hidden="true">
-                          check
-                        </span>
-                      )}
-                    </button>
-
-                    <div className="min-w-0 flex-1">
-                      <h3
-                        className={`font-semibold text-sm md:text-base break-words ${
-                          isDone ? 'line-through text-slate-500' : 'text-[#2e2f2d]'
-                        }`}
-                      >
-                        {task.title}
-                      </h3>
-                      {task.description && (
-                        <p className="text-xs text-[#5b5c59] mt-0.5 line-clamp-2">
-                          {task.description}
-                        </p>
-                      )}
-                      <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-[#5b5c59]">
-                        <span className="px-2.5 py-0.5 rounded-full bg-[#f2f1ec] font-medium text-[#2e2f2d]">
-                          {task.category}
-                        </span>
-                        <span>•</span>
-                        <time
-                          dateTime={task.dueDate}
-                          className={overdue ? 'text-[#b41340] font-bold' : ''}
-                        >
-                          Tenggat: {formatShortDate(task.dueDate)}
-                          {overdue ? ' (Terlambat)' : ''}
-                        </time>
-                        {task.estimatedMinutes && (
-                          <>
-                            <span>•</span>
-                            <span>~{task.estimatedMinutes} mnt</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => toggleTaskUrgent(task.id)}
-                      className={`px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer ${
-                        task.urgent
-                          ? 'bg-[#ff709f]/30 text-[#4c0022] border border-[#a7295a]/30'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                      }`}
-                    >
-                      {task.urgent ? 'Urgent' : 'Normal'}
-                    </button>
-
-                    <span
-                      className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${statusInfo.chipClass}`}
-                    >
-                      {statusInfo.label}
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={() => openEditTaskModal(task)}
-                      aria-label={`Edit tugas ${task.title}`}
-                      className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer"
-                    >
-                      <span className="material-symbols-outlined text-[16px]" aria-hidden="true">
-                        edit
-                      </span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => deleteTask(task.id)}
-                      aria-label={`Hapus tugas ${task.title}`}
-                      className="w-8 h-8 rounded-full bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-600 flex items-center justify-center cursor-pointer"
-                    >
-                      <span className="material-symbols-outlined text-[16px]" aria-hidden="true">
-                        close
-                      </span>
-                    </button>
-                  </div>
-                </article>
-              )
-            })}
-          </div>
-        )}
-      </section>
+            <span>Kutipan Baru</span>
+          </button>
+        </div>
+      </article>
     </section>
   )
 }

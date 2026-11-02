@@ -28,6 +28,15 @@ export const STATUS_MAP = {
   },
 }
 
+export const FILTER_LABELS = {
+  all: 'Semua Tugas',
+  today: 'Tugas Hari Ini',
+  urgent: 'Prioritas Urgent',
+  progress: 'Sedang Dikerjakan',
+  overdue: 'Tugas Terlambat',
+  selesai: 'Tugas Selesai',
+}
+
 const DEFAULT_CATEGORIES = ['Akademik', 'Non Akademik', 'Personal', 'Organisasi']
 
 const DEFAULT_SCHEDULES = {
@@ -99,7 +108,6 @@ export function TugasKuProvider({ children }) {
     setToastMessage(null)
   }, [])
 
-  // Sinkronisasi URL query parameter saat berpindah halaman agar link bisa di-bookmark
   const navigateTo = useCallback((pageKey) => {
     setActivePage(pageKey)
     const url = new URL(window.location.href)
@@ -171,7 +179,6 @@ export function TugasKuProvider({ children }) {
     loadQuoteFromApi()
   }, [loadInitialWorkspaceData, loadQuoteFromApi])
 
-  // Simpan perubahan ke localStorage setelah pemuatan pertama selesai
   useEffect(() => {
     if (isLoadingTasks || apiError) return
     try {
@@ -214,7 +221,6 @@ export function TugasKuProvider({ children }) {
     showToast('Memuat ulang data dari server API...', 'info')
   }, [simulateErrorMode, loadInitialWorkspaceData, loadQuoteFromApi, showToast])
 
-  // CRUD Tugas
   const addTask = useCallback(
     (taskPayload) => {
       const newTask = {
@@ -245,18 +251,15 @@ export function TugasKuProvider({ children }) {
     [showToast]
   )
 
-  const toggleTaskDone = useCallback(
-    (taskId) => {
-      setTasks((prev) =>
-        prev.map((item) => {
-          if (item.id !== Number(taskId)) return item
-          const nextStatus = item.status === 'selesai' ? 'progress' : 'selesai'
-          return { ...item, status: nextStatus }
-        })
-      )
-    },
-    []
-  )
+  const toggleTaskDone = useCallback((taskId) => {
+    setTasks((prev) =>
+      prev.map((item) => {
+        if (item.id !== Number(taskId)) return item
+        const nextStatus = item.status === 'selesai' ? 'progress' : 'selesai'
+        return { ...item, status: nextStatus }
+      })
+    )
+  }, [])
 
   const toggleTaskUrgent = useCallback((taskId) => {
     setTasks((prev) =>
@@ -273,9 +276,20 @@ export function TugasKuProvider({ children }) {
   )
 
   const markAllTasksDone = useCallback(() => {
-    setTasks((prev) => prev.map((item) => ({ ...item, status: 'selesai' })))
-    showToast('Semua tugas berhasil ditandai selesai!', 'success')
-  }, [showToast])
+    const allAlreadyDone = tasks.length > 0 && tasks.every((t) => t.status === 'selesai')
+    if (allAlreadyDone) {
+      setTasks((prev) =>
+        prev.map((item, idx) => ({
+          ...item,
+          status: idx % 2 === 0 ? 'progress' : 'belum',
+        }))
+      )
+      showToast('Status tugas dikembalikan menjadi aktif (Belum / On Progress).', 'info')
+    } else {
+      setTasks((prev) => prev.map((item) => ({ ...item, status: 'selesai' })))
+      showToast('Semua tugas berhasil ditandai selesai!', 'success')
+    }
+  }, [tasks, showToast])
 
   const restoreArchivedTask = useCallback(
     (taskId) => {
@@ -292,7 +306,6 @@ export function TugasKuProvider({ children }) {
     showToast('Seluruh arsip tugas selesai telah dibersihkan.', 'info')
   }, [showToast])
 
-  // CRUD Kategori
   const addCategory = useCallback(
     (categoryName) => {
       const clean = String(categoryName).trim()
@@ -314,13 +327,15 @@ export function TugasKuProvider({ children }) {
       setTasks((prev) =>
         prev.map((t) => (t.category === categoryName ? { ...t, category: 'Personal' } : t))
       )
+      if (taskCategoryFilter === categoryName) {
+        setTaskCategoryFilter('all')
+      }
       showToast(`Kategori "${categoryName}" dihapus.`, 'info')
       return true
     },
-    [showToast]
+    [taskCategoryFilter, showToast]
   )
 
-  // CRUD Catatan Kalender / Rundown
   const saveDateNote = useCallback(
     (isoDate, rawNoteText) => {
       const text = String(rawNoteText || '').trim()
@@ -350,7 +365,6 @@ export function TugasKuProvider({ children }) {
     [showToast]
   )
 
-  // CRUD Jadwal Harian
   const addScheduleItem = useCallback(
     (tabType, itemPayload) => {
       const targetTab = tabType || activeScheduleTab
@@ -382,14 +396,11 @@ export function TugasKuProvider({ children }) {
     [activeScheduleTab, showToast]
   )
 
-  const changeActiveMonth = useCallback(
-    (nextMonthIndex) => {
-      const normalized = (nextMonthIndex + 12) % 12
-      setActiveMonth(normalized)
-      setSelectedDateISO((prevISO) => fitDateToMonth(prevISO, normalized))
-    },
-    []
-  )
+  const changeActiveMonth = useCallback((nextMonthIndex) => {
+    const normalized = (nextMonthIndex + 12) % 12
+    setActiveMonth(normalized)
+    setSelectedDateISO((prevISO) => fitDateToMonth(prevISO, normalized))
+  }, [])
 
   const updateSettings = useCallback(
     (newPartialSettings) => {
@@ -401,11 +412,14 @@ export function TugasKuProvider({ children }) {
 
   const resetAllDataToDefault = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY)
+    setActiveFilter('all')
+    setTaskCategoryFilter('all')
+    setTaskStatusFilter('all')
+    setSearchQuery('')
     loadInitialWorkspaceData(true)
     showToast('Data aplikasi dikembalikan ke setelan awal Mock API.', 'info')
   }, [loadInitialWorkspaceData, showToast])
 
-  // Kalkulasi metrik & daftar terfilter
   const metrics = useMemo(() => {
     const total = tasks.length
     const completed = tasks.filter((t) => t.status === 'selesai').length
@@ -431,8 +445,26 @@ export function TugasKuProvider({ children }) {
     }
   }, [tasks])
 
+  const filterCounts = useMemo(() => {
+    const baseList =
+      taskCategoryFilter === 'all'
+        ? tasks
+        : tasks.filter((t) => t.category === taskCategoryFilter)
+
+    return {
+      all: baseList.length,
+      today: baseList.filter((t) => t.dueDate === todayISO).length,
+      urgent: baseList.filter((t) => Boolean(t.urgent)).length,
+      progress: baseList.filter((t) => t.status === 'progress').length,
+      overdue: baseList.filter((t) => isTaskOverdue(t)).length,
+      selesai: baseList.filter((t) => t.status === 'selesai').length,
+    }
+  }, [tasks, taskCategoryFilter, todayISO])
+
   const sidebarFilteredTasks = useMemo(() => {
     return tasks.filter((t) => {
+      const matchCategory = taskCategoryFilter === 'all' || t.category === taskCategoryFilter
+      if (!matchCategory) return false
       if (activeFilter === 'all') return true
       if (activeFilter === 'today') return t.dueDate === todayISO
       if (activeFilter === 'urgent') return Boolean(t.urgent)
@@ -441,7 +473,7 @@ export function TugasKuProvider({ children }) {
       if (activeFilter === 'selesai') return t.status === 'selesai'
       return true
     })
-  }, [tasks, activeFilter, todayISO])
+  }, [tasks, activeFilter, taskCategoryFilter, todayISO])
 
   const tableFilteredTasks = useMemo(() => {
     const q = searchQuery.trim().toLowerCase()
@@ -494,6 +526,7 @@ export function TugasKuProvider({ children }) {
     notesByDate,
     settings,
     metrics,
+    filterCounts,
     sidebarFilteredTasks,
     tableFilteredTasks,
     isLoadingTasks,

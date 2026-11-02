@@ -34,7 +34,7 @@ export function Navbar() {
       </a>
 
       <div className="max-w-[1480px] mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-4 lg:gap-6 min-w-0">
+        <div className="flex items-center gap-3 lg:gap-5 min-w-0">
           <button
             type="button"
             onClick={() => navigateTo('dashboard')}
@@ -51,7 +51,7 @@ export function Navbar() {
 
           <nav
             aria-label="Navigasi Halaman Utama"
-            className="hidden md:flex items-center gap-1 lg:gap-2 text-xs lg:text-sm font-semibold overflow-x-auto py-1"
+            className="hidden md:flex items-center gap-1 text-xs lg:text-sm font-semibold overflow-x-auto no-scrollbar py-1"
           >
             {NAV_PAGES.map((page) => {
               const isActive = activePage === page.id
@@ -61,7 +61,7 @@ export function Navbar() {
                   type="button"
                   onClick={() => navigateTo(page.id)}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`px-3 py-1.5 rounded-full transition-all whitespace-nowrap cursor-pointer ${
+                  className={`px-2.5 lg:px-3 py-1.5 rounded-full transition-all whitespace-nowrap cursor-pointer ${
                     isActive
                       ? 'bg-pink-100/80 text-[#a7295a] font-bold shadow-2xs'
                       : 'text-slate-600 hover:text-[#a7295a] hover:bg-slate-100/70'
