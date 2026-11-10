@@ -1,0 +1,27 @@
+/* Stylesheet Modul Jadwal Harian & Timer Fokus (Rozi) */
+
+.schedule-timeline-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.focus-layout-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 1.25rem;
+}
+
+@media screen and (max-width: 1024px) {
+  .focus-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .schedule-timeline-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
