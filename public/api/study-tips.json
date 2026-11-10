@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "source": "TugasKu Study Methods & Focus Guide API",
+    "author": "Rozi",
+    "version": "1.0.0"
+  },
+  "methods": [
+    {
+      "id": 501,
+      "name": "Teknik Pomodoro (25/5)",
+      "duration": "25 Menit Fokus + 5 Menit Istirahat",
+      "description": "Bagi pengerjaan laporan atau koding menjadi blok 25 menit tanpa gangguan notifikasi HP, lalu istirahat 5 menit untuk menjaga kesegaran otak."
+    },
+    {
+      "id": 502,
+      "name": "Time Blocking Harian",
+      "duration": "Blok Jadwal Tetap",
+      "description": "Alokasikan jam spesifik di kalender untuk tugas berat (misal 19.30 - 21.00) agar tidak habis terpakai untuk aktivitas pasif."
+    },
+    {
+      "id": 503,
+      "name": "Aturan 2 Menit (Two-Minute Rule)",
+      "duration": "< 2 Menit Eksekusi",
+      "description": "Jika suatu tugas kecil bisa diselesaikan dalam waktu kurang dari dua menit (seperti membalas pesan grup kelompok atau mengunggah file), kerjakan saat itu juga."
+    },
+    {
+      "id": 504,
+      "name": "Active Recall & Spaced Repetition",
+      "duration": "30 Menit Review",
+      "description": "Uji pemahaman materi kuliah dengan menuliskan kembali konsep penting tanpa melihat slide, lalu ulangi secara berkala menjelang pekan ujian."
+    }
+  ]
+}
