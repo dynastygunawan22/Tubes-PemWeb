@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "source": "TugasKu Daily Schedule Templates Mock API",
+    "author": "Rozi",
+    "version": "1.0.0"
+  },
+  "templates": {
+    "weekday": [
+      {
+        "id": 401,
+        "time": "06.30 - 07.30",
+        "activity": "Persiapan pagi & sarapan sehat sebelum berangkat kampus",
+        "location": "Kamar Kost",
+        "type": "Personal"
+      },
+      {
+        "id": 402,
+        "time": "08.00 - 10.30",
+        "activity": "Kuliah Teori Perancangan & Pemrograman Web",
+        "location": "Gedung Kuliah R.304",
+        "type": "Kuliah"
+      },
+      {
+        "id": 403,
+        "time": "13.00 - 15.30",
+        "activity": "Praktikum Pemrograman & pengerjaan modul mingguan",
+        "location": "Laboratorium Terpadu",
+        "type": "Kuliah"
+      },
+      {
+        "id": 404,
+        "time": "19.30 - 21.30",
+        "activity": "Sesi fokus mandiri: menyicil Tugas Besar & latihan koding",
+        "location": "Meja Belajar",
+        "type": "Belajar Mandiri"
+      }
+    ],
+    "weekend": [
+      {
+        "id": 405,
+        "time": "08.00 - 09.30",
+        "activity": "Review catatan kuliah sepekan & bersih-bersih ruang belajar",
+        "location": "Kamar Kost",
+        "type": "Perencanaan"
+      },
+      {
+        "id": 406,
+        "time": "10.00 - 12.00",
+        "activity": "Diskusi progres kelompok Tugas Besar secara daring",
+        "location": "Google Meet / Discord",
+        "type": "Organisasi"
+      },
+      {
+        "id": 407,
+        "time": "16.00 - 17.30",
+        "activity": "Olahraga ringan & rekreasi akhir pekan",
+        "location": "Taman Kota / Kampus",
+        "type": "Personal"
+      }
+    ]
+  }
+}
